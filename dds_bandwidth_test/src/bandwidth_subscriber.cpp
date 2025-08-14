@@ -16,8 +16,8 @@ public:
   {
     // Parameters
     this->declare_parameter("topic_name", "bandwidth_test");
-    this->declare_parameter("window_size", 1000);
-    this->declare_parameter("report_interval", 5.0);
+    this->declare_parameter("window_size", 10000);  // Larger window for high frequency
+    this->declare_parameter("report_interval", 1.0); // More frequent reporting
 
     topic_name_ = this->get_parameter("topic_name").as_string();
     window_size_ = this->get_parameter("window_size").as_int();
@@ -25,15 +25,15 @@ public:
 
     // Create subscribers for all message types with unique topic names
     string_sub_ = this->create_subscription<std_msgs::msg::String>(
-      topic_name_ + "_string", 10,
+      topic_name_ + "_string", 1000,  // Larger queue for high frequency
       std::bind(&BandwidthSubscriber::string_callback, this, std::placeholders::_1));
 
     image_sub_ = this->create_subscription<sensor_msgs::msg::Image>(
-      topic_name_ + "_image", 10,
+      topic_name_ + "_image", 1000,  // Larger queue for high frequency
       std::bind(&BandwidthSubscriber::image_callback, this, std::placeholders::_1));
 
     pose_array_sub_ = this->create_subscription<geometry_msgs::msg::PoseArray>(
-      topic_name_ + "_pose_array", 10,
+      topic_name_ + "_pose_array", 1000,  // Larger queue for high frequency
       std::bind(&BandwidthSubscriber::pose_array_callback, this, std::placeholders::_1));
 
     // Create timer for periodic reporting

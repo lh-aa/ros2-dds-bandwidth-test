@@ -14,8 +14,8 @@ public:
   {
     // Parameters
     this->declare_parameter("message_type", "string");
-    this->declare_parameter("message_size", 1024);
-    this->declare_parameter("publish_rate", 100.0);
+    this->declare_parameter("message_size", 8192);  // 8MB default for high bandwidth
+    this->declare_parameter("publish_rate", 1000.0); // 1000Hz for high throughput
     this->declare_parameter("duration", 60.0);
     this->declare_parameter("topic_name", "bandwidth_test");
 
@@ -28,13 +28,13 @@ public:
     // Create publishers based on message type
     if (message_type_ == "string") {
       string_pub_ = this->create_publisher<std_msgs::msg::String>(
-        topic_name_, 10);
+        topic_name_ + "_string", 1000);  // Larger queue for high frequency
     } else if (message_type_ == "image") {
       image_pub_ = this->create_publisher<sensor_msgs::msg::Image>(
-        topic_name_, 10);
+        topic_name_ + "_image", 1000);  // Larger queue for high frequency
     } else if (message_type_ == "pose_array") {
       pose_array_pub_ = this->create_publisher<geometry_msgs::msg::PoseArray>(
-        topic_name_, 10);
+        topic_name_ + "_pose_array", 1000);  // Larger queue for high frequency
     }
 
     // Create timer
@@ -48,7 +48,7 @@ public:
     total_bytes_ = 0;
 
     RCLCPP_INFO(this->get_logger(), 
-      "Starting bandwidth test: %s messages, %d bytes, %.1f Hz, %.1f seconds",
+      "Starting bandwidth test: %s messages, %d KB, %.1f Hz, %.1f seconds",
       message_type_.c_str(), message_size_, publish_rate_, duration_);
   }
 
@@ -94,7 +94,8 @@ private:
   void publish_string_message()
   {
     auto msg = std_msgs::msg::String();
-    msg.data = generate_string_data(message_size_);
+    // Interpret message_size_ as KB to be consistent with other message types
+    msg.data = generate_string_data(message_size_ * 1024);
     string_pub_->publish(msg);
     total_bytes_ += msg.data.size();
   }
@@ -104,8 +105,8 @@ private:
     auto msg = sensor_msgs::msg::Image();
     msg.header.stamp = this->now();
     msg.header.frame_id = "camera_frame";
-    msg.height = 480;
-    msg.width = 640;
+    msg.height = 1080;
+    msg.width = 1920;
     msg.encoding = "rgb8";
     msg.step = msg.width * 3;
     
@@ -115,7 +116,7 @@ private:
     int num_images = std::max(1, target_size / image_size);
     
     msg.data.resize(num_images * image_size, 0);
-    msg.height = 480 * num_images;
+    msg.height = 1080 * num_images;
     
     image_pub_->publish(msg);
     total_bytes_ += msg.data.size();
@@ -152,8 +153,12 @@ private:
     std::string data;
     data.reserve(size_bytes);
     
+    // Use a larger pattern for better performance
+    const std::string pattern = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    int pattern_size = pattern.size();
+    
     for (int i = 0; i < size_bytes; ++i) {
-      data += 'A' + (i % 26);
+      data += pattern[i % pattern_size];
     }
     
     return data;
