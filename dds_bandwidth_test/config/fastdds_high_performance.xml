@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dds>
+    <profiles xmlns="http://www.eprosima.com/XMLSchemas/fastRTPS_Profiles">
+        <!-- Transport descriptors for high-performance networking -->
+        <transport_descriptors>
+            <transport_descriptor>
+                <transport_id>udp_transport</transport_id>
+                <type>UDPv4</type>
+                <maxMessageSize>65500</maxMessageSize>
+                <sendBufferSize>65536</sendBufferSize>
+                <receiveBufferSize>65536</receiveBufferSize>
+                <TTL>1</TTL>
+                <non_blocking_send>true</non_blocking_send>
+            </transport_descriptor>
+            
+            <transport_descriptor>
+                <transport_id>shm_transport</transport_id>
+                <type>SHM</type>
+                <maxMessageSize>65500</maxMessageSize>
+                <segment_size>67108864</segment_size>
+                <port_queue_capacity>512</port_queue_capacity>
+                <healthy_check_timeout_ms>1000</healthy_check_timeout_ms>
+            </transport_descriptor>
+        </transport_descriptors>
+        
+        <!-- Participant profile for high-performance testing -->
+        <participant profile_name="high_performance_profile">
+            <rtps>
+                <name>high_performance_participant</name>
+                <defaultUnicastLocatorList>
+                    <locator/>
+                </defaultUnicastLocatorList>
+                <defaultMulticastLocatorList>
+                    <locator/>
+                </defaultMulticastLocatorList>
+                <sendSocketBufferSize>65536</sendSocketBufferSize>
+                <listenSocketBufferSize>65536</listenSocketBufferSize>
+                <builtin>
+                    <discovery_config>
+                        <leaseDuration>
+                            <sec>3</sec>
+                            <nanosec>0</nanosec>
+                        </leaseDuration>
+                        <leaseDuration_announcementperiod>
+                            <sec>1</sec>
+                            <nanosec>0</nanosec>
+                        </leaseDuration_announcementperiod>
+                    </discovery_config>
+                    <metatrafficUnicastLocatorList>
+                        <locator/>
+                    </metatrafficUnicastLocatorList>
+                    <metatrafficMulticastLocatorList>
+                        <locator/>
+                    </metatrafficMulticastLocatorList>
+                    <initialPeersList>
+                        <locator/>
+                    </initialPeersList>
+                </builtin>
+                <userTransports>
+                    <transport_id>udp_transport</transport_id>
+                    <transport_id>shm_transport</transport_id>
+                </userTransports>
+                <useBuiltinTransports>false</useBuiltinTransports>
+            </rtps>
+        </participant>
+        
+        <!-- Publisher profile for high-frequency publishing -->
+        <publisher profile_name="high_frequency_publisher">
+            <qos>
+                <publishMode>
+                    <kind>ASYNCHRONOUS</kind>
+                    <flow_controller_descriptor>
+                        <name>high_frequency_flow_controller</name>
+                        <scheduler>HIGH_PRIORITY</scheduler>
+                        <max_bytes_per_period>1048576</max_bytes_per_period>
+                        <period_ms>1</period_ms>
+                    </flow_controller_descriptor>
+                </publishMode>
+                <reliability>
+                    <kind>BEST_EFFORT</kind>
+                </reliability>
+                <durability>
+                    <kind>VOLATILE</kind>
+                </durability>
+                <history>
+                    <kind>KEEP_LAST</kind>
+                    <depth>10</depth>
+                </history>
+                <resourceLimits>
+                    <max_samples>1000</max_samples>
+                    <max_instances>1</max_instances>
+                    <max_samples_per_instance>1000</max_samples_per_instance>
+                </resourceLimits>
+            </qos>
+        </publisher>
+        
+        <!-- Subscriber profile for high-frequency receiving -->
+        <subscriber profile_name="high_frequency_subscriber">
+            <qos>
+                <reliability>
+                    <kind>BEST_EFFORT</kind>
+                </reliability>
+                <durability>
+                    <kind>VOLATILE</kind>
+                </durability>
+                <history>
+                    <kind>KEEP_LAST</kind>
+                    <depth>100</depth>
+                </history>
+                <resourceLimits>
+                    <max_samples>10000</max_samples>
+                    <max_instances>1</max_instances>
+                    <max_samples_per_instance>10000</max_samples_per_instance>
+                </resourceLimits>
+            </qos>
+        </subscriber>
+        
+        <!-- DataWriter profile for large messages -->
+        <data_writer profile_name="large_message_writer">
+            <qos>
+                <publishMode>
+                    <kind>ASYNCHRONOUS</kind>
+                    <flow_controller_descriptor>
+                        <name>large_message_flow_controller</name>
+                        <scheduler>HIGH_PRIORITY</scheduler>
+                        <max_bytes_per_period>5242880</max_bytes_per_period>
+                        <period_ms>10</period_ms>
+                    </flow_controller_descriptor>
+                </publishMode>
+                <reliability>
+                    <kind>BEST_EFFORT</kind>
+                </reliability>
+                <durability>
+                    <kind>VOLATILE</kind>
+                </durability>
+                <history>
+                    <kind>KEEP_LAST</kind>
+                    <depth>5</depth>
+                </history>
+                <resourceLimits>
+                    <max_samples>100</max_samples>
+                    <max_instances>1</max_instances>
+                    <max_samples_per_instance>100</max_samples_per_instance>
+                </resourceLimits>
+            </qos>
+        </data_writer>
+        
+        <!-- DataReader profile for large messages -->
+        <data_reader profile_name="large_message_reader">
+            <qos>
+                <reliability>
+                    <kind>BEST_EFFORT</kind>
+                </reliability>
+                <durability>
+                    <kind>VOLATILE</kind>
+                </durability>
+                <history>
+                    <kind>KEEP_LAST</kind>
+                    <depth>10</depth>
+                </history>
+                <resourceLimits>
+                    <max_samples>1000</max_samples>
+                    <max_instances>1</max_instances>
+                    <max_samples_per_instance>1000</max_samples_per_instance>
+                </resourceLimits>
+            </qos>
+        </data_reader>
+    </profiles>
+</dds> 

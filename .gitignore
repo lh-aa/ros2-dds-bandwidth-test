@@ -1,0 +1,45 @@
+# ROS2 build artifacts
+build/
+install/
+log/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C++ build artifacts
+*.o
+*.so
+*.a
+*.dylib
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# ROS2 specific
+.ros/
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+
+# Anaconda
+.conda/
+anaconda3/
+
+# Node modules (if any)
+node_modules/ 

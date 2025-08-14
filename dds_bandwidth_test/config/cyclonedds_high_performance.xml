@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CycloneDDS>
+    <Domain>
+        <General>
+            <AllowMulticast>true</AllowMulticast>
+            <MaxMessageSize>65500B</MaxMessageSize>
+            <NetworkInterfaceAddress>auto</NetworkInterfaceAddress>
+            <AllowMulticast>true</AllowMulticast>
+            <EnableMulticastLoopback>true</EnableMulticastLoopback>
+        </General>
+        
+        <Internal>
+            <Watermarks>
+                <WhcHigh>500kB</WhcHigh>
+                <WhcLow>100kB</WhcLow>
+            </Watermarks>
+            <WhcSize>2MB</WhcSize>
+            <ShmSize>100MB</ShmSize>
+            <ShmEnable>true</ShmEnable>
+        </Internal>
+        
+        <Tracing>
+            <Verbosity>info</Verbosity>
+            <OutputFile>stdout</OutputFile>
+        </Tracing>
+        
+        <Discovery>
+            <Peers>
+                <Peer address="127.0.0.1"/>
+                <Peer address="127.0.0.1"/>
+            </Peers>
+            <Tag>${CYCLONEDDS_DOMAIN_TAG}</Tag>
+            <ParticipantIndex>auto</ParticipantIndex>
+        </Discovery>
+        
+        <Tuner>
+            <AllowMulticast>true</AllowMulticast>
+            <EnableMulticastLoopback>true</EnableMulticastLoopback>
+            <MaxMessageSize>65500B</MaxMessageSize>
+            <NetworkInterfaceAddress>auto</NetworkInterfaceAddress>
+            <AllowMulticast>true</AllowMulticast>
+        </Tuner>
+    </Domain>
+</CycloneDDS> 
